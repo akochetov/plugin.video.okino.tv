@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="plugin.video.okino.tv"
+       name="okino.net"
+       version="0.1"
+       provider-name="noname">
+  <requires>
+    <import addon="xbmc.python" version="2.1.0" />
+    <import addon="script.module.beautifulsoup"/>
+    <import addon="script.module.antizapret"/>
+  </requires>
+  <extension point="xbmc.python.pluginsource"
+             provides="video"
+             library="default.py">
+    <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary>Просмотр видео онлайн okino.tv</summary>
+    <description>Просмотр видео онлайн okino.tv</description>
+    <platform>all</platform>
+  </extension>
+</addon>
+
