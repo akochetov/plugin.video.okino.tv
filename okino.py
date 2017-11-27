@@ -46,7 +46,7 @@ def do_getvideo(movie_page_url):
         'Referer': movie_page_url}
     request = Request(url, headers=headers)
     response = urlopen(request)
-    html = response.read().decode(response.headers.get_content_charset())
+    html = response.read().decode()#response.headers.get_content_charset())
 
     #parse out parameters
     video_id = re.compile('video/([^"]+?)/iframe').findall(iframe)[0]
@@ -72,7 +72,7 @@ def do_getvideo(movie_page_url):
 
     request = Request(url, urlencode(post_fields).encode(), headers=headers)
     response = urlopen(request)
-    mans = json.loads(response.read().decode(response.headers.get_content_charset()))
+    mans = json.loads(response.read().decode())#response.headers.get_content_charset()))
 
     print(mans['mans']['manifest_f4m'])
     print(mans['mans']['manifest_m3u8'])
@@ -91,7 +91,7 @@ def do_getvideo(movie_page_url):
     if (mans['mans']['manifest_mp4'] != None):
         request = Request(mans['mans']['manifest_mp4'], headers=headers)
         response = urlopen(request)
-        html = response.read().decode(response.headers.get_content_charset())
+        html = response.read().decode()#response.headers.get_content_charset())
         stream_json = json.loads(html)
 
         for q in video_quality:
@@ -101,7 +101,7 @@ def do_getvideo(movie_page_url):
     else:
         request = Request(mans['mans']['manifest_m3u8'], headers=headers)
         response = urlopen(request)
-        html = response.read().decode(response.headers.get_content_charset())
+        html = response.read().decode()#response.headers.get_content_charset())
         print(html)
         stream = re.compile('[\S\s]+(http://[^"]+)').findall(html)[0]
 
