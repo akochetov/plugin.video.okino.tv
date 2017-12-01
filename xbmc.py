@@ -11,7 +11,7 @@ class Keyboard:
         return True
     def getText(self):
         print('Keyboard.getText')
-        return 'Interstellar'
+        return 'interstellar'
 
 def executebuiltin(function, block = None):
     print('xbmc.executebuiltin %s %s' % (str(function), str(block)));

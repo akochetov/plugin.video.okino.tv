@@ -26,7 +26,7 @@ addon_name = Addon.getAddonInfo('name')
 addon_version = Addon.getAddonInfo('version')
 
 base_url = sys.argv[0]
-addon_handle = sys.argv[1]
+addon_handle = int(sys.argv[1])
 args = {}
 if len(sys.argv)>1:
     args = parse_qs(sys.argv[2][1:])
@@ -47,18 +47,22 @@ def showMessage(heading, message, times=3000, pics=addon_icon):
             xbmc.log('[%s]: showMessage: exec failed [%s]' % (addon_id, e), 3)
 
 def doSearch(keyword):
+    print('[%s]: doSearch: search by keyword - [%s]' % (addon_id, keyword.encode('utf-8')))
     hits = okino.do_search(keyword)
 
     for hit in hits:
+        print('[%s]: doSearch: hit [%s] image [%s] url [%s]' % (addon_id, hit[1].encode('utf-8'), hit[2].encode('utf-8'), hit[0].encode('utf-8')))
         li = xbmcgui.ListItem(hit[1], iconImage=hit[2], thumbnailImage=hit[2])
-        print("Item url:" + hit[0])
+        
         uri = build_url({
             'func': '_playItem',
             'mpath': hit[0]
         })
+        
         li.setInfo(type='Video', infoLabels={'title': hit[1], 'plot': hit[1]})
         li.setProperty('fanart_image', addon_fanart)
-        xbmcplugin.addDirectoryItem(addon_handle, uri, li, True)
+        li.setProperty('IsPlayable', 'true')
+        xbmcplugin.addDirectoryItem(addon_handle, uri, li, False)
 
     xbmcplugin.setContent(addon_handle, 'movies')
     xbmcplugin.endOfDirectory(addon_handle)
@@ -80,7 +84,7 @@ def _doSearch(args):
     kbd.doModal()
     if kbd.isConfirmed():
         sts = kbd.getText()
-        print("Entered text: "+sts)
+        #print("Entered text: "+sts)
         doSearch(urllib.quote(sts))
 
 def run_settings(params):
