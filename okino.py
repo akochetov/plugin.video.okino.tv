@@ -14,16 +14,20 @@ mw_key = '1ffd4aa558cc51f5a9fc6888e7bc5cb4'
 
 #search
 def do_search(keyword):
+    print('Search: '+keyword)
     hits = []
     post_fields = {'do': 'search',
                    'subaction': 'search',
-                   'story': keyword.encode('cp1251')}
+                   'story': keyword.decode('utf-8').encode('cp1251')}
 
     headers = {'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36',
+               #'Content-Type':'application/x-www-form-urlencoded ; charset=UTF-8',
                'Cache-Control':'max-age=0'}
     
-    request = Request(url_search, urlencode(post_fields).encode(),headers)
+    request = Request(url_search,urlencode(post_fields),headers)
     html = urlopen(request).read().decode('cp1251')
+    
+    print(html.encode('utf-8'))
 
     hrefs=re.compile('<a class="m-link[\S\s]+?href="([^"]+?)"').findall(html)
     names=re.compile('<div class="movie">[\S\s]+?<div class="m-title">([^"]+?)</div>').findall(html)

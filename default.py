@@ -47,7 +47,7 @@ def showMessage(heading, message, times=3000, pics=addon_icon):
             xbmc.log('[%s]: showMessage: exec failed [%s]' % (addon_id, e), 3)
 
 def doSearch(keyword):
-    print('[%s]: doSearch: search by keyword - [%s]' % (addon_id, keyword.encode('utf-8')))
+    print('[%s]: doSearch: search by keyword - [%s]' % (addon_id, keyword))
     hits = okino.do_search(keyword)
 
     for hit in hits:
@@ -85,7 +85,7 @@ def _doSearch(args):
     if kbd.isConfirmed():
         sts = kbd.getText()
         #print("Entered text: "+sts)
-        doSearch(urllib.quote(sts))
+        doSearch(sts)
 
 def run_settings(params):
     Addon.openSettings()

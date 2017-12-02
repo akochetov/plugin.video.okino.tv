@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 class Keyboard:
     def setDefault(self, str):
         print('Keyboard.setDefault message:%s' % str);
@@ -11,7 +13,7 @@ class Keyboard:
         return True
     def getText(self):
         print('Keyboard.getText')
-        return 'interstellar'
+        return u'интерст'
 
 def executebuiltin(function, block = None):
     print('xbmc.executebuiltin %s %s' % (str(function), str(block)));
