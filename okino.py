@@ -14,7 +14,6 @@ mw_key = '1ffd4aa558cc51f5a9fc6888e7bc5cb4'
 
 #search
 def do_search(keyword):
-    print('Search: '+keyword)
     hits = []
     post_fields = {'do': 'search',
                    'subaction': 'search',
@@ -27,7 +26,7 @@ def do_search(keyword):
     request = Request(url_search,urlencode(post_fields),headers)
     html = urlopen(request).read().decode('cp1251')
     
-    print(html.encode('utf-8'))
+    #print(html.encode('utf-8'))
 
     hrefs=re.compile('<a class="m-link[\S\s]+?href="([^"]+?)"').findall(html)
     names=re.compile('<div class="movie">[\S\s]+?<div class="m-title">([^"]+?)</div>').findall(html)

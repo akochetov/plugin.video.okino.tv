@@ -13,7 +13,12 @@ class Keyboard:
         return True
     def getText(self):
         print('Keyboard.getText')
-        return u'интерст'
+        value = ''
+        try:
+            value = raw_input()
+        except:
+            pass
+        return value
 
 def executebuiltin(function, block = None):
     print('xbmc.executebuiltin %s %s' % (str(function), str(block)));
