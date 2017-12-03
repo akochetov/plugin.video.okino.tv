@@ -45,7 +45,7 @@ print("Parameters: "+str(args))
 
 #utility functions
 def getSettingsList(settingId):
-    value = urllib.unquote(_Addon.getSetting(settingId))#.decode('utf-8')
+    value = urllib.unquote(_Addon.getSetting(settingId))
     
     if len(value)<3:#this means there are some \r\n or smt
         return []
@@ -55,7 +55,7 @@ def getSettingsList(settingId):
 def setSettingsList(settingId, value, maxElements = 0):
     if maxElements > 0:
         value = value[-maxElements:]
-    _Addon.setSetting(settingId,urllib.quote(json.dumps(value)))#.encode('utf-8')))
+    _Addon.setSetting(settingId,urllib.quote(json.dumps(value)))
 
 def build_url(params):
     return '%s?%s' % (base_url, urllib.urlencode(params))
@@ -162,6 +162,15 @@ def mainScreen(params):
     })
     li.setProperty('fanart_image', addon_fanart)
     xbmcplugin.addDirectoryItem(addon_handle, uri, li, True)
+    
+    #menu item for testing purposes
+    if False:
+        li = xbmcgui.ListItem('Test menu', iconImage=addon_icon, thumbnailImage=addon_icon)
+        uri = build_url({
+            'func': 'mainTest'
+        })
+        li.setProperty('fanart_image', addon_fanart)
+        xbmcplugin.addDirectoryItem(addon_handle, uri, li, True)
 
     xbmcplugin.setContent(addon_handle, 'files')
     xbmcplugin.endOfDirectory(handle=addon_handle, succeeded=True, updateListing=False, cacheToDisc=True)
@@ -188,23 +197,55 @@ def mainSearch(params):
     xbmcplugin.setContent(addon_handle, 'files')
     xbmcplugin.endOfDirectory(handle=addon_handle, succeeded=True, updateListing=False, cacheToDisc=True)
 
+def mainTest(params):
+    a = u'поиск'
+    b = 'test1'
+    c = 'test2'
+    
+    setSettingsList('test','',maxLastViewed)
+    
+    tests = getSettingsList('test')
+    print 'word:'+a.encode('utf-8')
+    
+    lst = {            
+        'mtitle': a.encode('utf-8'),
+        'mimage': b,
+        'mpath': c
+    }
+    print 'list before: '+str(lst)
+    uri = build_url(lst)
+    
+    tests.append(uri)
+    print 'before:'+str(tests)
+    setSettingsList('test',tests,maxLastViewed)
+    tests = getSettingsList('test')
+    args = parse_qs(tests[0][len(base_url)+1:])
+    print 'after: '+str(tests)
+    print 'list after:'+str(args)
+    print 'after:'+args['mtitle'][0].encode('latin1').decode('utf-8')
+        
 def mainLastViewed(params):
     #read and list previous viewed movies
     movies = getSettingsList(settingLastViewed)
     for movie in movies:
 
         args = parse_qs(movie[len(base_url)+1:])
+        
+        #after transofrmations from json and url encodings, data gets latin1 encoded
+        mtitle = args['mtitle'][0].encode('latin1').decode('utf-8')
+        mimage = args['mimage'][0].encode('latin1').decode('utf-8')
+        mpath = args['mpath'][0].encode('latin1').decode('utf-8')
 
-        li = xbmcgui.ListItem(args['mtitle'][0],args['mimage'][0], thumbnailImage=args['mimage'][0])
+        li = xbmcgui.ListItem(mtitle, mimage, mimage)
         
         uri = build_url({
             'func': 'playItem',
-            'mtitle': args['mtitle'][0].encode('utf-8'),
-            'mimage': args['mimage'][0].encode('utf-8'),
-            'mpath': args['mpath'][0].encode('utf-8')
+            'mtitle': mtitle.encode('utf-8'),
+            'mimage': mimage.encode('utf-8'),
+            'mpath': mpath.encode('utf-8')
         })
         
-        li.setInfo(type='Video', infoLabels={'title': args['mtitle'][0], 'plot': args['mtitle'][0]})
+        li.setInfo(type='Video', infoLabels={'title': mtitle, 'plot': mtitle})
         li.setProperty('fanart_image', addon_fanart)
         li.setProperty('IsPlayable', 'true')
         xbmcplugin.addDirectoryItem(addon_handle, uri, li, False) 
