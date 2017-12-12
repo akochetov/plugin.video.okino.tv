@@ -17,6 +17,7 @@ import xbmcaddon
 
 #okino custom lib import
 import okino
+from okinoclasses import *
 
 #constants
 settingLastSearches = 'lastsearches'
@@ -79,28 +80,68 @@ def doSearch(keyword):
     hits = okino.do_search(keyword)
 
     for hit in hits:
-        print('[%s]: doSearch: hit [%s] image [%s] url [%s]' % (addon_id, hit[1].encode('utf-8'), hit[2].encode('utf-8'), hit[0].encode('utf-8')))
-        li = xbmcgui.ListItem(hit[1], iconImage=hit[2], thumbnailImage=hit[2])
+        print('[%s]: doSearch: hit [%s] image [%s] url [%s]' % (addon_id, hit.title().encode('utf-8'), hit.image().encode('utf-8'), hit.url().encode('utf-8')))
+        li = xbmcgui.ListItem(hit.title(), iconImage=hit.image(), thumbnailImage=hit.image())
         
         uri = build_url({
-            'func': 'playItem',
-            'mtitle': hit[1].encode('utf-8'),
-            'mimage': hit[2].encode('utf-8'),
-            'mpath': hit[0].encode('utf-8')
+            'func': 'openItem',
+            'mtitle': hit.title().encode('utf-8'),
+            'mimage': hit.image().encode('utf-8'),
+            'mpath': hit.url().encode('utf-8')
         })
         
-        li.setInfo(type='Video', infoLabels={'title': hit[1], 'plot': hit[1]})
+        li.setInfo(type='Video', infoLabels={'title': hit.title(), 'plot': hit.title()})
         li.setProperty('fanart_image', addon_fanart)
         li.setProperty('IsPlayable', 'true')
-        xbmcplugin.addDirectoryItem(addon_handle, uri, li, False)
+        xbmcplugin.addDirectoryItem(addon_handle, uri, li, True)
 
     xbmcplugin.setContent(addon_handle, 'movies')
     xbmcplugin.endOfDirectory(addon_handle)
+    
+def addVideo(video,folder = False):
+    li = xbmcgui.ListItem(video.title(), iconImage=video.image(), thumbnailImage=video.image())
+    
+    func = 'playItem'
+    if folder:
+        func = 'openItem'
+    
+    uri = build_url({
+        'func': func,
+        'mtitle': video.title().decode('utf-8').encode('utf-8'),
+        'mimage': video.image().decode('utf-8').encode('utf-8'),
+        'mpath': video.url().decode('utf-8').encode('utf-8')
+    })
+    
+    li.setInfo(type='Video', infoLabels={'title': video.title(), 'plot': video.title()})
+    li.setProperty('fanart_image', addon_fanart)
+    li.setProperty('IsPlayable', 'true')
+    xbmcplugin.addDirectoryItem(addon_handle, uri, li, folder)
+
+def openItem(args):
+    video = okino.do_getvideo(SearchHit(args['mpath'][0],args['mtitle'][0],args['mimage'][0]))    
+    
+    if isinstance(video,Movie):
+        addVideo(video)
+
+    if isinstance(video,Translations):
+        for hit in video.translations():
+            addVideo(hit,True)
+            
+    if isinstance(video,Series):
+        for hit in video.seasons():
+            addVideo(hit,True)
+            
+    if isinstance(video,Season):
+        for hit in video.episodes():
+            addVideo(hit)
+            
+    xbmcplugin.setContent(addon_handle, 'movies')
+    xbmcplugin.endOfDirectory(addon_handle)    
 
 def playItem(args):
-    link = okino.do_getvideo(args['mpath'][0])
-    
-    #setSettingsList(settingLastViewed,'',maxLastViewed)
+    #video = okino.do_getvideo(args['mpath'][0],args['mtitle'][0],args['mimage'][0],True)
+
+   #setSettingsList(settingLastViewed,'',maxLastViewed)
     #remember movie opened
     movies = getSettingsList(settingLastViewed)
     
@@ -119,8 +160,8 @@ def playItem(args):
         })    
         movies.append(uri)
         setSettingsList(settingLastViewed,movies,maxLastViewed)
-    
-    item = xbmcgui.ListItem(path=link)
+
+    item = xbmcgui.ListItem(path=args['mpath'][0])#video.url())
     xbmcplugin.setResolvedUrl(addon_handle, True, item)
 
 def oldSearch(args):
