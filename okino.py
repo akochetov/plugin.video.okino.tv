@@ -109,6 +109,7 @@ def do_getvideo(hit,justPlay=False):
         ref = getToken('encodeURIComponent\(\'(.+?)\'\),',html)
         
         if hit.url().find('/iframe')<0 and len(translations)>5 and len(seasons)>5:
+            print('Returning translations: '+str(translations.encode('utf-8')))
             video = Translations(video,json.loads(translations))
             return video
             
@@ -120,10 +121,12 @@ def do_getvideo(hit,justPlay=False):
                 url = url[i+1:]
             
             params = parse_qs(url)
+            print("Episodes data: "+episodes)
 
-            video = Series(video,json.loads(seasons),ref)
+            #video = Series(video,json.loads(seasons),ref)
             #check if current search hit is a specific season
-            if 'season' in params:
+            if ('season' in params) and ('episode' not in params):
+                print('Returning video: '+str(hit))
                 video = Season(hit.url(),hit.title(),hit.image(),json.loads(episodes),ref,int(params['season'][0]))
                 return video
 

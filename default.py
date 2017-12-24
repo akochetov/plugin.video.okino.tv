@@ -112,6 +112,8 @@ def addVideo(video,folder = False):
         'mpath': video.url().decode('utf-8').encode('utf-8')
     })
     
+    print(video.url())
+    
     li.setInfo(type='Video', infoLabels={'title': video.title(), 'plot': video.title()})
     li.setProperty('fanart_image', addon_fanart)
     li.setProperty('IsPlayable', 'true')
@@ -119,7 +121,7 @@ def addVideo(video,folder = False):
 
 def openItem(args):
     video = okino.do_getvideo(SearchHit(args['mpath'][0],args['mtitle'][0],args['mimage'][0]))    
-    
+    print(video)
     if isinstance(video,Movie):
         addVideo(video)
 
@@ -127,13 +129,13 @@ def openItem(args):
         for hit in video.translations():
             addVideo(hit,True)
             
-    if isinstance(video,Series):
+    if isinstance(video,Series) and not isinstance(video,Season):
         for hit in video.seasons():
             addVideo(hit,True)
             
     if isinstance(video,Season):
         for hit in video.episodes():
-            addVideo(hit)
+            addVideo(hit,True)
             
     xbmcplugin.setContent(addon_handle, 'movies')
     xbmcplugin.endOfDirectory(addon_handle)    

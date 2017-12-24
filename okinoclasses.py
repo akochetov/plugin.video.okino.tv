@@ -36,7 +36,7 @@ class Translations():
             i = url.rfind('/')
             url1 = url[0:i+1]
             url = url1 + trn[0] + url2
-            self._translations.append(SearchHit(url=url,title='Перевод - '.decode('utf-8')+trn[1],image = hit.image()))
+            self._translations.append(SearchHit(url=url,title=u'Перевод - '.encode('utf-8')+trn[1].encode('utf-8'),image = hit.image()))
     
     def translations(self):
         return self._translations
@@ -70,7 +70,7 @@ class Season(Series,SearchHit):
             self._episodes.append(s)
 
     def title(self):
-        return 'Сезон '.decode('utf-8')+str(self._season)+'. '+self._title
+        return u'Сезон '.encode('utf-8')+str(self._season)+'. '+self._title
 
     def url(self):
         return self._url+'?season='+str(self._season)+'&ref='+self._ref
@@ -91,7 +91,7 @@ class Episode(Season):
         self._episode = episode
     
     def title(self):
-        return 'Сезон '.decode('utf-8')+str(self._season)+'. Серия '.decode('utf-8')+str(self._episode)+'. '+self._title
+        return u'Сезон '.encode('utf-8')+str(self._season)+u'. Серия '.encode('utf-8')+str(self._episode)+'. '+self._title
                 
     def url(self):
         return self._url+'&episode='+str(self._episode)
