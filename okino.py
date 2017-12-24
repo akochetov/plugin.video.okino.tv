@@ -23,8 +23,7 @@ video_quality = ['1080', '720', '640', '480', '320', '240']
 url_search = 'http://okino.cc'
 #some player id neeeded to get videos
 mw_key = '1ffd4aa558cc51f5a9fc6888e7bc5cb4'
-#another weird key used in moonwalk player POST request
-post_id = 'c0e005ee151ce1c4'
+
 
 #search
 def do_search(keyword):
@@ -97,7 +96,7 @@ def do_getvideo(hit,justPlay=False):
     host = getToken('host: \'([^"]+?)\'',html)
     proto = getToken('proto: \'([^"]+?)\'',html)
     port = getToken('port: ([^"]+?),',html)
-    post_data = getToken('window\.[^"]+?= \'([^"]+?)\';',html)
+    post_data = getToken('window\[[^"]+?\] = \'([^"]+?)\';',html)
    
     #create return value (video), for now from base class
     video = Movie(iframe,hit.title(),hit.image())
@@ -128,8 +127,21 @@ def do_getvideo(hit,justPlay=False):
                 video = Season(hit.url(),hit.title(),hit.image(),json.loads(episodes),ref,int(params['season'][0]))
                 return video
 
+    #get script fetching data for POST requests
+    script = getToken('<script src="(/assets/video-[^"]+?.js)">',html)
+    script_host = getToken('(https://[^"]+?)/',iframe)
+        
+    request = Request(script_host+script, headers=headers)
+    response = urlopen(request)
+    html = response.read()
+    post_id = getToken('n.([^"]+?)=e\["[^"]+?"\]',html)
+    #post_data = getToken('n.[^"]+?=e\["([^"]+?)"\]',html)
+    print(post_id)
+    print(post_data)
+    #n.fb53523854bfb7b9dad71c40816446a2=e["1108dad62b87faeca249516f16bfffacd7c806b69ecefe47af85fe063cb0ca32"]
     # getting manifests
-    url = proto + host + ":" + port + "/manifests/video/" + video_token + "/all"
+    #url = proto + host + ":" + port + "/manifests/video/" + video_token + "/all"
+    url = "http://" + host + "/manifests/video/" + video_token + "/all"
     print('Requesting manifests: '+url)
     post_fields = {'mw_key': mw_key,
                    'mw_pid': mw_pid,
@@ -188,7 +200,7 @@ def do_getvideo(hit,justPlay=False):
         response = urlopen(request)
         html = response.read().decode()#response.headers.get_content_charset())
         print(html)
-        stream = re.compile('[\S\s]+(http://[^"]+)').findall(html)[0][:-12]
+        stream = re.compile('[\S\s]+(http[s]?://[^"]+)').findall(html)[0][:-12]
 
     print('Stream to play: '+stream)
 
