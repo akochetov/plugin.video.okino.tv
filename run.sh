@@ -1,5 +1,5 @@
 #python default.py "plugin.video.okino.tv" "$1"
 #python default.py 1 "?func=openItem&mpath=http%3A%2F%2Fokino.cc%2F2802-teoriya-bolshogo-vzryva-6-sezon.html&mtitle=bigbangtheory&mimage=a"
-python default.py 1 "?func=openItem&mpath=http%3A%2F%2Fokino.cc%2F378-interstellar-2014.html&mtitle=bigbangtheory&mimage=a"
+python default.py 1 "?func=openItem&mpath=http%3A%2F%2Fmygid.org%2F378-interstellar.html&mtitle=bigbangtheory&mimage=a"
 #python default.py 1 "?func=openItem&mpath=http%3A%2F%2Fmoonwalk.cc%2Fserial%2F1904598f55106afc87e565350aad6789%2Fiframe&mtitle=bigbangtheory&mimage=a"
 #python default.py 1 "?func=openItem&mpath=http%3A%2F%2Fmoonwalk.cc%2Fserial%2F1904598f55106afc87e565350aad6789%2Fiframe%3Fseason%3D8%26ref%3DbmNidXZUNERmQ08vOER4ZFhtTFNyMFhZVEFBaUE4a1hqZDR5T014aml6aWF1bUVUUXlJSjFTQkFWUTlVV29NVnZ6SUk3RXVqeFJGTXhabjM5TWxEQUdONHI0ZGhiZHMycmxGWVJ0eFFPRWxncWt6WXdFUWsrYjhuS2pFV2VIS2xkc0RuNm1aWGY0YkRXYkpXMXZlL1dhZm50U2FhR3VrVTBVQUE5dWFhZ09VYVlJSFFtV0ZndUtNQUJEWTdMTlFJLS1ZZGU1ckJvUFN5UVNjQVgvSE0wczNnPT0%3D--59414607be9dbedbd3d0e6d17c27683b51ebb969&mtitle=bigbangtheory&mimage=a"
